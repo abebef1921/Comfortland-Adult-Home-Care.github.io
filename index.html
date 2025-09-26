@@ -372,7 +372,7 @@
                     parameters: { 
                         "sampleCount": 1,
                         "outputMimeType": "image/jpeg",
-                        // Ensure the aspect ratio is appropriate for the container (16:9 for the gallery)
+                        // Use 4:3 for the tall image in the 'About' section, 16:9 for the gallery.
                         "aspectRatio": (containerId === 'image-container-4') ? "4:3" : "16:9" 
                     } 
                 };
@@ -418,15 +418,23 @@
                 { id: 4, prompt: "A side view of a compassionate caregiver assisting a senior woman with reading a book on a comfortable sofa in a cozy, clean adult home care environment. Warm, soft focus, daylight. 4:3 aspect ratio." }
             ];
 
-            // Start generating all four images concurrently
-            imagePrompts.forEach(item => {
-                generateAndDisplayImage(
-                    item.prompt, 
-                    `ai-image-${item.id}`, 
-                    `loader-${item.id}`, 
-                    `image-container-${item.id}`
-                );
-            });
+            /**
+             * Generates all images sequentially to avoid simultaneous API calls 
+             * that can lead to throttling or failure.
+             */
+            const generateImagesSequentially = async () => {
+                for (const item of imagePrompts) {
+                    await generateAndDisplayImage(
+                        item.prompt, 
+                        `ai-image-${item.id}`, 
+                        `loader-${item.id}`, 
+                        `image-container-${item.id}`
+                    );
+                }
+            };
+            
+            // Start the sequential generation process
+            generateImagesSequentially();
 
             // --- Mobile Menu Toggle ---
             document.getElementById('mobile-menu-btn').addEventListener('click', function() {
