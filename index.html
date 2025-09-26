@@ -15,22 +15,11 @@
         }
         /* Custom gradient for hero */
         .hero-gradient {
+            /* Using a high-quality placeholder image for the hero background */
             background-image: linear-gradient(to bottom, rgba(248, 250, 252, 0.9), rgba(248, 250, 252, 0.7)), 
                               url('https://placehold.co/1200x600/b0e0e6/2a52be?text=Comfortable+Home+Care+Exterior');
             background-size: cover;
             background-position: center;
-        }
-
-        /* Loading Spinner CSS */
-        .loader {
-            border-top-color: #3b82f6; /* Blue-500 */
-            border-left-color: #3b82f6;
-            border-right-color: #e0e7ff; /* Blue-100 */
-            border-bottom-color: #e0e7ff;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -83,28 +72,31 @@
         </div>
     </section>
     
-    <!-- Snapshot of Comfort Section (AI Image Gallery) -->
+    <!-- Snapshot of Comfort Section (Image Gallery - Now Static) -->
     <section class="py-12 bg-white border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-2xl font-bold text-center text-gray-900 mb-8">A Snapshot of Comfort</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
-                <!-- Image 1 Container: Interactive Living -->
-                <div class="rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition duration-300 bg-gray-200 flex items-center justify-center aspect-video" id="image-container-1">
-                    <div id="loader-1" class="loader ease-linear rounded-full border-8 h-12 w-12"></div>
-                    <img id="ai-image-1" src="" alt="Residents playing a board game with a caregiver" class="w-full h-auto object-cover aspect-video hidden">
+                <!-- Image 1: Interactive Living (Replace the 'src' attribute with your first image URL) -->
+                <div class="rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition duration-300">
+                    <img src="https://placehold.co/1000x562/cceeff/1e3a8a?text=Residents+Playing+Games" 
+                         alt="Residents playing a board game with a caregiver" 
+                         class="w-full h-auto object-cover aspect-video">
                 </div>
                 
-                <!-- Image 2 Container: Compassion/Trust -->
-                <div class="rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition duration-300 bg-gray-200 flex items-center justify-center aspect-video" id="image-container-2">
-                    <div id="loader-2" class="loader ease-linear rounded-full border-8 h-12 w-12"></div>
-                    <img id="ai-image-2" src="" alt="Caregiver gently holding a senior's hand" class="w-full h-auto object-cover aspect-video hidden">
+                <!-- Image 2: Compassion/Trust (Replace the 'src' attribute with your second image URL) -->
+                <div class="rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition duration-300">
+                    <img src="https://placehold.co/1000x562/e0f2f1/047857?text=Comforting+Care+Hand" 
+                         alt="Caregiver gently holding a senior's hand" 
+                         class="w-full h-auto object-cover aspect-video">
                 </div>
                 
-                <!-- Image 3 Container: Outdoor Activity -->
-                <div class="rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition duration-300 bg-gray-200 flex items-center justify-center aspect-video" id="image-container-3">
-                    <div id="loader-3" class="loader ease-linear rounded-full border-8 h-12 w-12"></div>
-                    <img id="ai-image-3" src="" alt="Senior and caregiver gardening on a patio" class="w-full h-auto object-cover aspect-video hidden">
+                <!-- Image 3: Outdoor Activity (Replace the 'src' attribute with your third image URL) -->
+                <div class="rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition duration-300">
+                    <img src="https://placehold.co/1000x562/d1fae5/065f46?text=Outdoor+Gardening+Activity" 
+                         alt="Senior and caregiver gardening on a patio" 
+                         class="w-full h-auto object-cover aspect-video">
                 </div>
             </div>
         </div>
@@ -144,10 +136,11 @@
                         </li>
                     </ul>
                 </div>
-                <!-- Image (AI Generated Image 4) -->
-                <div class="shadow-2xl rounded-xl overflow-hidden bg-gray-200 flex items-center justify-center min-h-[300px]" id="image-container-4">
-                    <div id="loader-4" class="loader ease-linear rounded-full border-8 h-12 w-12"></div>
-                    <img id="ai-image-4" src="" alt="A compassionate caregiver assisting an elderly resident with a daily task." class="w-full h-full object-cover hidden">
+                <!-- Image 4: Caregiver Assisting (Replace the 'src' attribute with your fourth image URL) -->
+                <div class="shadow-2xl rounded-xl overflow-hidden">
+                    <img src="https://placehold.co/800x600/fecaca/991b1b?text=Caregiver+Assisting+Reading" 
+                         alt="A compassionate caregiver assisting an elderly resident with reading." 
+                         class="w-full h-full object-cover">
                 </div>
             </div>
         </div>
@@ -314,128 +307,10 @@
         </div>
     </footer>
 
-    <!-- JavaScript for Mobile Menu Toggle, Form Submission, and AI Image Generation -->
+    <!-- JavaScript for Mobile Menu Toggle and Form Submission -->
     <script>
-        // --- API Key (Mandatory: leave as empty string) ---
-        const apiKey = ""; 
-        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
-        const MAX_RETRIES = 5;
-
-        // Utility for exponential backoff retry logic
-        async function retryFetchWithExponentialBackoff(url, options, maxRetries) {
-            for (let i = 0; i < maxRetries; i++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (response.status === 429 && i < maxRetries - 1) {
-                        const delay = Math.pow(2, i) * 1000 + Math.random() * 1000;
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                        continue;
-                    }
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(`API call failed: ${response.status} ${response.statusText}. Details: ${JSON.stringify(errorData)}`);
-                    }
-                    return response;
-                } catch (error) {
-                    if (i === maxRetries - 1) {
-                        throw error;
-                    }
-                    // Continue loop for retry
-                }
-            }
-        }
-
-        /**
-         * Generates an image using the Imagen API and displays it in the specified container.
-         * @param {string} prompt The text prompt for the image generator.
-         * @param {string} imageId The ID of the <img> element to update.
-         * @param {string} loaderId The ID of the loading spinner element.
-         * @param {string} containerId The ID of the container element.
-         */
-        async function generateAndDisplayImage(prompt, imageId, loaderId, containerId) {
-            const imageElement = document.getElementById(imageId);
-            const loaderElement = document.getElementById(loaderId);
-            const containerElement = document.getElementById(containerId);
-
-            if (!imageElement || !loaderElement || !containerElement) {
-                console.error("Missing required elements for image generation:", { imageId, loaderId, containerId });
-                return;
-            }
-
-            // Show loader, hide image
-            loaderElement.classList.remove('hidden');
-            imageElement.classList.add('hidden');
-            
-            try {
-                const payload = { 
-                    instances: [{ prompt: prompt }], 
-                    parameters: { 
-                        "sampleCount": 1,
-                        "outputMimeType": "image/jpeg",
-                        // Use 4:3 for the tall image in the 'About' section, 16:9 for the gallery.
-                        "aspectRatio": (containerId === 'image-container-4') ? "4:3" : "16:9" 
-                    } 
-                };
-
-                const options = {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                };
-
-                const response = await retryFetchWithExponentialBackoff(API_URL, options, MAX_RETRIES);
-                const result = await response.json();
-
-                const base64Data = result?.predictions?.[0]?.bytesBase64Encoded;
-
-                if (base64Data) {
-                    const imageUrl = `data:image/jpeg;base64,${base64Data}`;
-                    imageElement.src = imageUrl;
-                    imageElement.classList.remove('hidden');
-                } else {
-                    console.error("No base64 image data found in response:", result);
-                    // Fallback to a placeholder on error
-                    imageElement.src = `https://placehold.co/600x400/ef4444/ffffff?text=Image+Load+Error`;
-                    imageElement.classList.remove('hidden');
-                }
-            } catch (error) {
-                console.error("Error generating image:", error);
-                // Fallback to a placeholder on error
-                imageElement.src = `https://placehold.co/600x400/ef4444/ffffff?text=Image+Failed`;
-                imageElement.classList.remove('hidden');
-            } finally {
-                // Hide loader whether successful or failed
-                loaderElement.classList.add('hidden');
-            }
-        }
 
         window.onload = function() {
-            // Prompts for AI Image Generation
-            const imagePrompts = [
-                { id: 1, prompt: "A cheerful, sunlit living room in a modern, adult family home care setting. Two diverse seniors are playing a quiet board game at a wooden table, smiling. A friendly caregiver is gently observing in the background. High-quality, warm lighting, natural colors, photorealistic." },
-                { id: 2, prompt: "Close-up shot of a caregiver's hand gently holding an older woman's hand on a soft blanket. The setting is a comfortable, well-lit home environment, focusing on compassion, trust, and physical comfort. Professional portrait photography style, shallow depth of field." },
-                { id: 3, prompt: "An elderly man and a caregiver tending to potted flowers on a sunny outdoor patio, symbolizing light activity and engagement. The man is smiling and the caregiver is assisting. Bright, inviting colors, photorealistic." },
-                { id: 4, prompt: "A side view of a compassionate caregiver assisting a senior woman with reading a book on a comfortable sofa in a cozy, clean adult home care environment. Warm, soft focus, daylight. 4:3 aspect ratio." }
-            ];
-
-            /**
-             * Generates all images sequentially to avoid simultaneous API calls 
-             * that can lead to throttling or failure.
-             */
-            const generateImagesSequentially = async () => {
-                for (const item of imagePrompts) {
-                    await generateAndDisplayImage(
-                        item.prompt, 
-                        `ai-image-${item.id}`, 
-                        `loader-${item.id}`, 
-                        `image-container-${item.id}`
-                    );
-                }
-            };
-            
-            // Start the sequential generation process
-            generateImagesSequentially();
-
             // --- Mobile Menu Toggle ---
             document.getElementById('mobile-menu-btn').addEventListener('click', function() {
                 var menu = document.getElementById('mobile-menu');
@@ -468,3 +343,4 @@
     </script>
 </body>
 </html>
+
